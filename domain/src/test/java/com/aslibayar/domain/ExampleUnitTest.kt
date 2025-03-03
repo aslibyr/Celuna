@@ -1,4 +1,4 @@
-package com.aslibayar.mylibrary
+package com.aslibayar.domain
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
