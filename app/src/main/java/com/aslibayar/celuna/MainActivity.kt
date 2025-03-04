@@ -1,5 +1,6 @@
 package com.aslibayar.celuna
 
+import BottomBar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -12,13 +13,13 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.aslibayar.celuna.components.bottom_bar.BottomBar
+import com.aslibayar.celuna.components.navigation.HomeRoute
 import com.aslibayar.celuna.components.navigation.MainNavigation
-import com.aslibayar.celuna.components.navigation.Screen
-import com.aslibayar.celuna.components.navigation.isScreen
+import com.aslibayar.celuna.components.navigation.ProfileRoute
 import com.aslibayar.celuna.ui.theme.CelunaTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,9 +41,8 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val showBottomBar by remember {
                 derivedStateOf {
-                    navBackStackEntry?.destination?.let { destination ->
-                        destination.isScreen(Screen.Home) || destination.isScreen(Screen.Profile)
-                    } ?: false
+                    navBackStackEntry?.destination?.hasRoute<HomeRoute>() == true ||
+                            navBackStackEntry?.destination?.hasRoute<ProfileRoute>() == true
                 }
             }
             CelunaTheme {

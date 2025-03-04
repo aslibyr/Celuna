@@ -1,18 +1,11 @@
-package com.aslibayar.celuna.components.bottom_bar
-
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -22,16 +15,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.aslibayar.celuna.components.navigation.Screen
-import com.aslibayar.celuna.components.navigation.isScreen
-import com.aslibayar.celuna.components.navigation.navigateToScreen
+import com.aslibayar.celuna.components.bottom_bar.BottomBarRoute
+import com.aslibayar.celuna.components.navigation.HomeRoute
+import com.aslibayar.celuna.components.navigation.ProfileRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -40,64 +33,56 @@ fun BottomBar(
     navController: NavController,
     isBottomBarVisible: Boolean
 ) {
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
     val items = listOf(
-        BottomBarItem(
+        BottomBarRoute(
             name = "Home",
-            screen = Screen.Home,
-            icon = Icons.Outlined.Home
+            route = HomeRoute,
+            icon = Icons.Filled.Home
         ),
-        BottomBarItem(
-            name = "Profile",
-            screen = Screen.Profile,
-            icon = Icons.Outlined.Person
-        )
+        BottomBarRoute(
+            name = "Second",
+            route = ProfileRoute,
+            icon = Icons.Filled.Search
+        ),
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-    ) {
-        AnimatedVisibility(isBottomBarVisible) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        AnimatedVisibility(visible = isBottomBarVisible) {
             NavigationBar(
-                containerColor = Color.White,
-                modifier = Modifier
-                    .height(110.dp)
-                    .clip(shape = RoundedCornerShape(30.dp))
-                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(30.dp)),
+                containerColor = MaterialTheme.colorScheme.background,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 items.forEach { item ->
-                    val selected = currentDestination.isScreen(item.screen)
-
                     NavigationBarItem(
-                        selected = selected,
-                        onClick = { navController.navigateToScreen(item.screen) },
-                        label = {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = selected,
-                                enter = androidx.compose.animation.fadeIn() +
-                                        androidx.compose.animation.expandVertically(),
-                                exit = androidx.compose.animation.fadeOut() +
-                                        androidx.compose.animation.shrinkVertically()
-                            ) {
-                                Text(
-                                    text = item.name,
-                                    fontSize = 10.sp,
-                                    modifier = Modifier.animateContentSize()
-                                )
+                        selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
+                        onClick = {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         },
+                        label = {
+                            Text(
+                                text = item.name,
+                                fontSize = 10.sp,
+                            )
+                        },
                         icon = {
-                            Icon(item.icon, contentDescription = item.name, Modifier.size(30.dp))
+                            Icon(item.icon, contentDescription = item.name)
                         },
                         interactionSource = NoRippleInteractionSource,
                         colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.Red,
+                            selectedTextColor = Color.Red,
                             unselectedIconColor = MaterialTheme.colorScheme.onBackground,
                             unselectedTextColor = MaterialTheme.colorScheme.onBackground,
-                            indicatorColor = Color.White
+                            indicatorColor = MaterialTheme.colorScheme.background
                         )
                     )
                 }
@@ -107,7 +92,10 @@ fun BottomBar(
 }
 
 private object NoRippleInteractionSource : MutableInteractionSource {
+
     override val interactions: Flow<Interaction> = emptyFlow()
+
     override suspend fun emit(interaction: Interaction) {}
+
     override fun tryEmit(interaction: Interaction) = true
 }

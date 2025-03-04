@@ -1,10 +1,5 @@
 package com.aslibayar.celuna.components.bottom_bar
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.aslibayar.celuna.components.navigation.Screen
 
-data class BottomBarItem(
-    val name: String,
-    val screen: Screen,
-    val icon: ImageVector
-)
+data class BottomBarRoute<T : Any>(val name: String, val route: T, val icon: ImageVector)

@@ -18,7 +18,7 @@ fun MainNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = HomeRoute,
         modifier = modifier,
         enterTransition = {
             slideIntoContainer(
@@ -45,11 +45,11 @@ fun MainNavigation(
             )
         }
     ) {
-        composable(Screen.Home.route) {
+        composable<HomeRoute> {
             HomeScreen()
         }
 
-        composable(Screen.Profile.route) {
+        composable<ProfileRoute> {
             ProfileScreen()
         }
     }
