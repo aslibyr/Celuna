@@ -5,17 +5,6 @@ object Constants {
     const val USERS_COLLECTION = "users"
     const val EVENTS_COLLECTION = "events"
 
-    // Navigation routes
-    const val AUTH_GRAPH = "auth"
-    const val MAIN_GRAPH = "main"
-    const val LOGIN_SCREEN = "login"
-    const val REGISTER_SCREEN = "register"
-    const val FORGOT_PASSWORD_SCREEN = "forgot_password"
-    const val CALENDAR_SCREEN = "calendar"
-    const val EVENT_DETAIL_SCREEN = "event_detail"
-    const val ADD_EDIT_EVENT_SCREEN = "add_edit_event"
-    const val PROFILE_SCREEN = "profile"
-
     // Arguments
     const val EVENT_ID_ARG = "eventId"
 

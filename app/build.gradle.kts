@@ -52,6 +52,8 @@ android {
 dependencies {
     implementation(project(":data"))
 
+    implementation(libs.kotlinx.serialization.json)
+
     // AndroidX Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
